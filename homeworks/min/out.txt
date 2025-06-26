@@ -1,0 +1,220 @@
+
+Task A
+
+step 0, |grad| = 1651,1827, f = 401,0000
+step 1, |grad| = 1,9999, f = 0,9950
+step 2, |grad| = 29,4488, f = 0,7863
+step 3, |grad| = 7,5124, f = 0,5146
+step 4, |grad| = 13,7733, f = 0,3856
+step 5, |grad| = 9,6598, f = 0,2434
+step 6, |grad| = 8,7848, f = 0,1454
+step 7, |grad| = 4,8556, f = 0,0767
+step 8, |grad| = 5,0758, f = 0,0371
+step 9, |grad| = 1,7534, f = 0,0136
+step 10, |grad| = 2,0081, f = 0,0040
+step 11, |grad| = 0,3269, f = 0,0006
+step 12, |grad| = 0,1702, f = 0,0000
+step 13, |grad| = 0,0075, f = 0,0000
+step 14, |grad| = 0,0003, f = 0,0000
+Rosenbrock guess: [2,0000, 2,0000]
+Rosenbrock minimum: [1,0000, 1,0001], steps: 14
+
+step 0, |grad| = 58,3095, f = 50,0000
+step 1, |grad| = 71,3352, f = 23,0178
+step 2, |grad| = 11,5141, f = 0,7731
+step 3, |grad| = 0,6022, f = 0,0022
+step 4, |grad| = 0,0022, f = 0,0000
+step 5, |grad| = 0,0000, f = 0,0000
+Himmelblau guess: [-2,0000, 2,0000]
+Himmelblau minimum: [-2,8051, 3,1313], steps: 5
+
+Task B
+
+step 0, |grad| = 1,4775, f = 26,9395
+step 1, |grad| = 0,4829, f = 26,9323
+step 2, |grad| = 0,3530, f = 26,8751
+step 3, |grad| = 0,0210, f = 26,8695
+step 4, |grad| = 0,0004, f = 26,8695
+step 5, |grad| = 0,0000, f = 26,8695
+step 6, |grad| = 0,0000, f = 26,8695
+step 7, |grad| = 0,0000, f = 26,8695
+step 8, |grad| = 0,0000, f = 26,8695
+step 9, |grad| = 0,0000, f = 26,8695
+step 10, |grad| = 0,0000, f = 26,8695
+step 11, |grad| = 0,0000, f = 26,8695
+step 12, |grad| = 0,0000, f = 26,8695
+step 13, |grad| = 0,0000, f = 26,8695
+step 14, |grad| = 0,0000, f = 26,8695
+step 15, |grad| = 0,0000, f = 26,8695
+step 16, |grad| = 0,0000, f = 26,8695
+step 17, |grad| = 0,0000, f = 26,8695
+step 18, |grad| = 0,0000, f = 26,8695
+step 19, |grad| = 0,0000, f = 26,8695
+step 20, |grad| = 0,0000, f = 26,8695
+step 21, |grad| = 0,0000, f = 26,8695
+step 22, |grad| = 0,0000, f = 26,8695
+step 23, |grad| = 0,0000, f = 26,8695
+step 24, |grad| = 0,0000, f = 26,8695
+step 25, |grad| = 0,0000, f = 26,8695
+step 26, |grad| = 0,0000, f = 26,8695
+step 27, |grad| = 0,0000, f = 26,8695
+step 28, |grad| = 0,0000, f = 26,8695
+step 29, |grad| = 0,0000, f = 26,8695
+step 30, |grad| = 0,0000, f = 26,8695
+step 31, |grad| = 0,0000, f = 26,8695
+step 32, |grad| = 0,0000, f = 26,8695
+step 33, |grad| = 0,0000, f = 26,8695
+step 34, |grad| = 0,0000, f = 26,8695
+step 35, |grad| = 0,0000, f = 26,8695
+step 36, |grad| = 0,0000, f = 26,8695
+step 37, |grad| = 0,0000, f = 26,8695
+step 38, |grad| = 0,0000, f = 26,8695
+step 39, |grad| = 0,0000, f = 26,8695
+step 40, |grad| = 0,0000, f = 26,8695
+step 41, |grad| = 0,0000, f = 26,8695
+step 42, |grad| = 0,0000, f = 26,8695
+step 43, |grad| = 0,0000, f = 26,8695
+step 44, |grad| = 0,0000, f = 26,8695
+step 45, |grad| = 0,0000, f = 26,8695
+step 46, |grad| = 0,0000, f = 26,8695
+step 47, |grad| = 0,0000, f = 26,8695
+step 48, |grad| = 0,0000, f = 26,8695
+step 49, |grad| = 0,0000, f = 26,8695
+step 50, |grad| = 0,0000, f = 26,8695
+step 51, |grad| = 0,0000, f = 26,8695
+step 52, |grad| = 0,0000, f = 26,8695
+step 53, |grad| = 0,0000, f = 26,8695
+step 54, |grad| = 0,0000, f = 26,8695
+step 55, |grad| = 0,0000, f = 26,8695
+step 56, |grad| = 0,0000, f = 26,8695
+step 57, |grad| = 0,0000, f = 26,8695
+step 58, |grad| = 0,0000, f = 26,8695
+step 59, |grad| = 0,0000, f = 26,8695
+step 60, |grad| = 0,0000, f = 26,8695
+step 61, |grad| = 0,0000, f = 26,8695
+step 62, |grad| = 0,0000, f = 26,8695
+step 63, |grad| = 0,0000, f = 26,8695
+step 64, |grad| = 0,0000, f = 26,8695
+step 65, |grad| = 0,0000, f = 26,8695
+step 66, |grad| = 0,0000, f = 26,8695
+step 67, |grad| = 0,0000, f = 26,8695
+step 68, |grad| = 0,0000, f = 26,8695
+step 69, |grad| = 0,0000, f = 26,8695
+step 70, |grad| = 0,0000, f = 26,8695
+step 71, |grad| = 0,0000, f = 26,8695
+step 72, |grad| = 0,0000, f = 26,8695
+step 73, |grad| = 0,0000, f = 26,8695
+step 74, |grad| = 0,0000, f = 26,8695
+step 75, |grad| = 0,0000, f = 26,8695
+step 76, |grad| = 0,0000, f = 26,8695
+step 77, |grad| = 0,0000, f = 26,8695
+step 78, |grad| = 0,0000, f = 26,8695
+step 79, |grad| = 0,0000, f = 26,8695
+step 80, |grad| = 0,0000, f = 26,8695
+step 81, |grad| = 0,0000, f = 26,8695
+step 82, |grad| = 0,0000, f = 26,8695
+step 83, |grad| = 0,0000, f = 26,8695
+step 84, |grad| = 0,0000, f = 26,8695
+step 85, |grad| = 0,0000, f = 26,8695
+step 86, |grad| = 0,0000, f = 26,8695
+step 87, |grad| = 0,0000, f = 26,8695
+step 88, |grad| = 0,0000, f = 26,8695
+step 89, |grad| = 0,0000, f = 26,8695
+step 90, |grad| = 0,0000, f = 26,8695
+step 91, |grad| = 0,0000, f = 26,8695
+step 92, |grad| = 0,0000, f = 26,8695
+step 93, |grad| = 0,0000, f = 26,8695
+step 94, |grad| = 0,0000, f = 26,8695
+step 95, |grad| = 0,0000, f = 26,8695
+step 96, |grad| = 0,0000, f = 26,8695
+step 97, |grad| = 0,0000, f = 26,8695
+step 98, |grad| = 0,0000, f = 26,8695
+step 99, |grad| = 0,0000, f = 26,8695
+step 100, |grad| = 0,0000, f = 26,8695
+step 101, |grad| = 0,0000, f = 26,8695
+step 102, |grad| = 0,0000, f = 26,8695
+step 103, |grad| = 0,0000, f = 26,8695
+step 104, |grad| = 0,0000, f = 26,8695
+step 105, |grad| = 0,0000, f = 26,8695
+step 106, |grad| = 0,0000, f = 26,8695
+step 107, |grad| = 0,0000, f = 26,8695
+step 108, |grad| = 0,0000, f = 26,8695
+step 109, |grad| = 0,0000, f = 26,8695
+step 110, |grad| = 0,0000, f = 26,8695
+step 111, |grad| = 0,0000, f = 26,8695
+step 112, |grad| = 0,0000, f = 26,8695
+step 113, |grad| = 0,0000, f = 26,8695
+step 114, |grad| = 0,0000, f = 26,8695
+step 115, |grad| = 0,0000, f = 26,8695
+step 116, |grad| = 0,0000, f = 26,8695
+step 117, |grad| = 0,0000, f = 26,8695
+step 118, |grad| = 0,0000, f = 26,8695
+step 119, |grad| = 0,0000, f = 26,8695
+step 120, |grad| = 0,0000, f = 26,8695
+step 121, |grad| = 0,0000, f = 26,8695
+step 122, |grad| = 0,0000, f = 26,8695
+step 123, |grad| = 0,0000, f = 26,8695
+step 124, |grad| = 0,0000, f = 26,8695
+step 125, |grad| = 0,0000, f = 26,8695
+step 126, |grad| = 0,0000, f = 26,8695
+step 127, |grad| = 0,0000, f = 26,8695
+step 128, |grad| = 0,0000, f = 26,8695
+step 129, |grad| = 0,0000, f = 26,8695
+step 130, |grad| = 0,0000, f = 26,8695
+step 131, |grad| = 0,0000, f = 26,8695
+step 132, |grad| = 0,0000, f = 26,8695
+step 133, |grad| = 0,0000, f = 26,8695
+step 134, |grad| = 0,0000, f = 26,8695
+step 135, |grad| = 0,0000, f = 26,8695
+step 136, |grad| = 0,0000, f = 26,8695
+step 137, |grad| = 0,0000, f = 26,8695
+step 138, |grad| = 0,0000, f = 26,8695
+step 139, |grad| = 0,0000, f = 26,8695
+step 140, |grad| = 0,0000, f = 26,8695
+step 141, |grad| = 0,0000, f = 26,8695
+step 142, |grad| = 0,0000, f = 26,8695
+step 143, |grad| = 0,0000, f = 26,8695
+step 144, |grad| = 0,0000, f = 26,8695
+step 145, |grad| = 0,0000, f = 26,8695
+step 146, |grad| = 0,0000, f = 26,8695
+step 147, |grad| = 0,0000, f = 26,8695
+step 148, |grad| = 0,0000, f = 26,8695
+step 149, |grad| = 0,0000, f = 26,8695
+step 150, |grad| = 0,0000, f = 26,8695
+step 151, |grad| = 0,0000, f = 26,8695
+step 152, |grad| = 0,0000, f = 26,8695
+step 153, |grad| = 0,0000, f = 26,8695
+step 154, |grad| = 0,0000, f = 26,8695
+step 155, |grad| = 0,0000, f = 26,8695
+step 156, |grad| = 0,0000, f = 26,8695
+step 157, |grad| = 0,0000, f = 26,8695
+step 158, |grad| = 0,0000, f = 26,8695
+step 159, |grad| = 0,0000, f = 26,8695
+step 160, |grad| = 0,0000, f = 26,8695
+step 161, |grad| = 0,0000, f = 26,8695
+Best fit parameters are:
+Mass  = 125,9722 GeV
+Width = 2,0863 GeV
+A     = 9,8762
+Steps = 161
+Fit data written to fit.txt
+Data points written to data.txt
+A plot of the fit can be found in fit.png.
+
+Task C
+
+Comparing gradient approximations at the known minimum (x, y) = (1, 1):
+Gradient using forward difference:
+   1,2e-05   2,98e-06 
+Gradient using central difference:
+  3,55e-13      0e+00 
+→ The central difference gives a gradient closer to zero, as expected at a minimum.
+
+Comparing Hessian approximations at the same point:
+Hessian using forward difference:
+  8,02e+02     -4e+02 
+    -4e+02      2e+02 
+Hessian using central difference:
+  8,02e+02      0e+00 
+     0e+00      2e+02 
+→ The central difference gives a symmetric and more accurate Hessian.

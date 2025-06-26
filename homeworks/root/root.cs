@@ -1,234 +1,221 @@
-﻿// Unified Newton + Hydrogen Shooting + Tests
+﻿// Assignment: Newton, Rosenbrock, Himmelblau, Hydrogen (shooting method) - 2024-06-26
+
 using System;
+using System.Linq;
 using System.IO;
-using System.Collections.Generic;
-using static System.Math;
 
-// --- Begin Vec ---
-public class Vec
-{
-    public static Vec operator -(Vec v) => new(VecMap(v, x => -x));
-    private double[] data;
-
-    public Vec(double[] values) { data = values; }
-    public Vec(double a, double b) { data = new[] { a, b }; }
-    public double this[int i] { get => data[i]; set => data[i] = value; }
-    public int Length => data.Length;
-    public override string ToString() => "[" + string.Join(", ", data) + "]";
-    public static Vec operator *(Vec v, double s) => new(VecMap(v, x => x * s));
-    public static Vec operator -(Vec a, Vec b) => new(VecZip(a, b, (x, y) => x - y));
-    public static Vec operator +(Vec a, Vec b) => new(VecZip(a, b, (x, y) => x + y));
-    public Vec Copy() => new((double[])data.Clone());
-    public double Norm() => Sqrt(VecMap(data, x => x * x).Sum());
-    private static double[] VecMap(Vec v, Func<double, double> f) { var r = new double[v.Length]; for (int i = 0; i < v.Length; i++) r[i] = f(v[i]); return r; }
-    private static double[] VecZip(Vec a, Vec b, Func<double, double, double> f) { var r = new double[a.Length]; for (int i = 0; i < a.Length; i++) r[i] = f(a[i], b[i]); return r; }
-    public static implicit operator double[](Vec v) => v.data;
-    public static implicit operator Vec(double[] arr) => new(arr);
+class vector {
+    public double[] data;
+    public int size { get { return data.Length; } }
+    public vector(int n) { data = new double[n]; }
+    public vector(params double[] d) { data = d; }
+    public double this[int i] { get => data[i]; set => data[i]=value; }
+    public vector copy() => new vector((double[])data.Clone());
+    public double norm() => Math.Sqrt(data.Sum(x => x*x));
+    public static vector operator +(vector a, vector b) => new vector(a.data.Zip(b.data, (x,y)=>x+y).ToArray());
+    public static vector operator -(vector a, vector b) => new vector(a.data.Zip(b.data, (x,y)=>x-y).ToArray());
+    public static vector operator *(double s, vector v) => new vector(v.data.Select(x=>s*x).ToArray());
+    public static vector operator *(vector v, double s) => s * v;
+    public static vector operator /(vector v, double s) => new vector(v.data.Select(x=>x/s).ToArray());
+    public vector map(Func<double,double> f) => new vector(data.Select(f).ToArray());
+    public double max() => data.Max(x => Math.Abs(x));
+    public override string ToString() => $"({string.Join(", ", data.Select(d => d.ToString("F6")))} )";
 }
 
-// --- Begin Matrix ---
-public class Matrix
-{
-    public int Rows, Cols;
-    public double[,] Data;
-    public Matrix(int r, int c) { Rows = r; Cols = c; Data = new double[r, c]; }
-    public double this[int i, int j] { get => Data[i, j]; set => Data[i, j] = value; }
-    public Matrix Copy() { var m = new Matrix(Rows, Cols); Array.Copy(Data, m.Data, Data.Length); return m; }
-    public static Matrix Identity(int n) { var I = new Matrix(n, n); for (int i = 0; i < n; i++) I[i, i] = 1; return I; }
+class matrix {
+    public double[,] data;
+    public int n;
+    public matrix(int n) { this.n = n; data = new double[n, n]; }
+    public double this[int i, int j] { get => data[i, j]; set => data[i, j] = value; }
 }
 
-// --- Begin QR ---
-public class QR
+// Numerical Jacobian (finite differences)
+static class NumMethods
 {
-    public Matrix Q, R;
-    public QR(Matrix A)
+    public static matrix jacobian(Func<vector, vector> f, vector x, vector fx = null, vector dx = null)
     {
-        int m = A.Rows, n = A.Cols;
-        Q = A.Copy(); R = new Matrix(n, n);
-        for (int i = 0; i < n; i++)
-        {
-            double norm = 0; for (int j = 0; j < m; j++) norm += Q[j, i] * Q[j, i];
-            norm = Sqrt(norm); R[i, i] = norm;
-            for (int j = 0; j < m; j++) Q[j, i] /= norm;
-            for (int j = i + 1; j < n; j++)
-            {
-                double dot = 0; for (int k = 0; k < m; k++) dot += Q[k, i] * Q[k, j];
-                R[i, j] = dot;
-                for (int k = 0; k < m; k++) Q[k, j] -= dot * Q[k, i];
-            }
-        }
-    }
-    public Vec Solve(Vec b)
-    {
-        int n = R.Cols; Vec x = new double[n];
-        Vec Qtb = new double[n]; for (int i = 0; i < b.Length; i++) { double sum = 0; for (int j = 0; j < b.Length; j++) sum += Q[j, i] * b[j]; Qtb[i] = sum; }
-        for (int i = n - 1; i >= 0; i--) { double sum = Qtb[i]; for (int j = i + 1; j < n; j++) sum -= R[i, j] * x[j]; x[i] = sum / R[i, i]; }
-        return x;
-    }
-}
-
-// --- Begin genlist ---
-public class genlist<T>
-{
-    private List<T> data = new();
-    public void add(T item) => data.Add(item);
-    public T this[int i] { get => data[i]; set => data[i] = value; }
-    public int size() => data.Count;
-    public void clear() => data.Clear();
-    public bool remove(T item) => data.Remove(item);
-}
-
-// --- Begin ODE Solver ---
-public class OdeSolver
-{
-    public static (Vec, Vec) RKStep(Func<double, Vec, Vec> f, double x, Vec y, double h)
-    {
-        var k0 = f(x, y);
-        var k1 = f(x + h / 2, y + k0 * (h / 2));
-        var yh = y + k1 * h;
-        var dy = (k1 - k0) * h;
-        return (yh, dy);
-    }
-    public static (genlist<double>, genlist<Vec>) RKDriver(Func<double, Vec, Vec> f, double a, double b, Vec y, double h = 0.1, double acc = 1e-3, double eps = 1e-3)
-    {
-        var xlist = new genlist<double>();
-        var ylist = new genlist<Vec>();
-        xlist.add(a); ylist.add(y.Copy());
-        while (a < b)
-        {
-            if (a + h > b) h = b - a;
-            var (yh, dy) = RKStep(f, a, y, h);
-            double tol = (acc + eps * yh.Norm()) * Sqrt(h / (b - a));
-            double err = dy.Norm();
-            if (err <= tol)
-            {
-                a += h; y = yh;
-                xlist.add(a); ylist.add(y.Copy());
-            }
-            h *= Min(Pow(tol / err, 0.25) * 0.95, 2);
-        }
-        return (xlist, ylist);
-    }
-}
-
-// --- Begin Newton + Tests + Schrödinger ---
-public static class NewtonSolver
-{
-    public static void Main()
-    {
-        Test1D(); RosenbrockMin(); HimmelblauMin(); HydrogenGroundState();
-        ExportHydrogenWaveFunction();
-    }
-
-    static Vec Newton(Func<Vec, Vec> f, Vec x, double acc = 1e-6)
-    {
-        Vec fx = f(x);
-        while (true)
-        {
-            if (fx.Norm() < acc) return x;
-            Matrix J = Jacobian(f, x, fx);
-            var qr = new QR(J);
-            Vec Dx = qr.Solve(-fx);
-            double lambda = 1;
-            Vec z, fz;
-            while (true)
-            {
-                z = x + Dx * lambda;
-                fz = f(z);
-                if (fz.Norm() < (1 - lambda / 2) * fx.Norm() || lambda < 1e-10) break;
-                lambda /= 2;
-            }
-            if (Dx.Norm() < 1e-10) break;
-            x = z; fx = fz;
-        }
-        return x;
-    }
-
-    static Matrix Jacobian(Func<Vec, Vec> f, Vec x, Vec fx = null)
-    {
-        int n = x.Length;
-        if (fx == null) fx = f(x);
-        Matrix J = new Matrix(n, n);
+        int n = x.size;
+        if (dx == null)
+            dx = x.map(xi => Math.Max(Math.Abs(xi), 1) * Math.Pow(2, -26));
+        if (fx == null)
+            fx = f(x);
+        matrix J = new matrix(n);
         for (int j = 0; j < n; j++)
         {
-            double dxj = Max(Abs(x[j]), 1.0) * Pow(2, -26);
-            x[j] += dxj;
-            Vec dF = f(x) - fx;
-            for (int i = 0; i < n; i++) J[i, j] = dF[i] / dxj;
-            x[j] -= dxj;
+            double saved = x[j];
+            x[j] += dx[j];
+            vector df = f(x) - fx;
+            for (int i = 0; i < n; i++)
+                J[i, j] = df[i] / dx[j];
+            x[j] = saved;
         }
         return J;
     }
 
-    static void Test1D()
+    // Simple 2x2 solver (Gauss); replace with any QR or your own if needed.
+    public static vector solve2x2(matrix A, vector b)
     {
-        Func<Vec, Vec> f = v => new Vec(v[0] * v[0] - 2);
-        var root = Newton(f, new Vec(new double[] { 1.0 }));
-        Console.WriteLine($"1D root: {root[0]} ≈ {Sqrt(2)}");
+        double a = A[0, 0], b1 = A[0, 1], c = A[1, 0], d = A[1, 1];
+        double det = a * d - b1 * c;
+        if (Math.Abs(det) < 1e-14) throw new Exception("Singular matrix");
+        double x0 = (d * b[0] - b1 * b[1]) / det;
+        double x1 = (-c * b[0] + a * b[1]) / det;
+        return new vector(x0, x1);
     }
 
-    static void RosenbrockMin()
+    // Newton with simple backtracking line search
+    public static vector newton(Func<vector, vector> f, vector start, double acc = 1e-6, vector dx = null)
     {
-        Func<Vec, Vec> grad = v => new Vec(
-            -2 * (1 - v[0]) - 400 * v[0] * (v[1] - v[0] * v[0]),
-            200 * (v[1] - v[0] * v[0])
-        );
-        var root = Newton(grad, new double[] { -1.2, 1.0 });
-        Console.WriteLine($"Rosenbrock min at: {root}");
-    }
-
-    static void HimmelblauMin()
-    {
-        Func<Vec, Vec> grad = v => new Vec(
-            4 * v[0] * (v[0] * v[0] + v[1] - 11) + 2 * (v[0] + v[1] * v[1] - 7),
-            2 * (v[0] * v[0] + v[1] - 11) + 4 * v[1] * (v[0] + v[1] * v[1] - 7)
-        );
-        var root = Newton(grad, new double[] { 6.0, 6.0 });
-        Console.WriteLine($"Himmelblau min at: {root}");
-    }
-
-    static void HydrogenGroundState()
-    {
-        double rmin = 1e-4, rmax = 8.0;
-        Func<double, double> M = E =>
+        vector x = start.copy();
+        vector fx = f(x), z, fz;
+        double λmin = 1.0 / 1024;
+        int iter = 0;
+        do
         {
-            Func<double, Vec, Vec> F = (r, y) => new Vec(y[1], -2 * (-1 / r - E) * y[0]);
-            Vec y0 = new Vec(rmin - rmin * rmin, 1 - 2 * rmin);
-            var (rs, ys) = OdeSolver.RKDriver(F, rmin, rmax, y0);
-            return ys[ys.size() - 1][0];
+            if (fx.norm() < acc) break;
+            matrix J = jacobian(f, x, fx, dx);
+            vector Dx = solve2x2(J, -1 * fx);
+            double λ = 1.0;
+            do
+            {
+                z = x + λ * Dx;
+                fz = f(z);
+                if (fz.norm() < (1 - λ / 2) * fx.norm()) break;
+                if (λ < λmin) break;
+                λ /= 2;
+            } while (true);
+            x = z; fx = fz;
+            if (Dx.norm() < (dx == null ? 1e-10 : dx.max())) break;
+            iter++;
+            if (iter > 50) { Console.WriteLine("Warning: Newton exceeded 50 iterations!"); break; }
+        } while (true);
+        return x;
+    }
+}
+
+class Program
+{
+    // Gradient of Rosenbrock function
+    static vector rosenbrock_grad(vector v)
+    {
+        double x = v[0], y = v[1];
+        return new vector(-2 * (1 - x) - 400 * x * (y - x * x), 200 * (y - x * x));
+    }
+    // Gradient of Himmelblau's function
+    static vector himmelblau_grad(vector v)
+    {
+        double x = v[0], y = v[1];
+        double dx = 4 * x * (x * x + y - 11) + 2 * (x + y * y - 7);
+        double dy = 2 * (x * x + y - 11) + 4 * y * (x + y * y - 7);
+        return new vector(dx, dy);
+    }
+    // Shooting method for hydrogen atom
+    static double shoot(double E, double rmin, double rmax, double dr)
+    {
+        double f = rmin - rmin * rmin;
+        double g = 1 - 2 * rmin;
+        for (double r = rmin; r < rmax; r += dr)
+        {
+            // RK4 integrator
+            double k1f = dr * g;
+            double k1g = dr * (-2 * (E + 1 / r) * f);
+
+            double k2f = dr * (g + 0.5 * k1g);
+            double k2g = dr * (-2 * (E + 1 / (r + 0.5 * dr)) * (f + 0.5 * k1f));
+
+            double k3f = dr * (g + 0.5 * k2g);
+            double k3g = dr * (-2 * (E + 1 / (r + 0.5 * dr)) * (f + 0.5 * k2f));
+
+            double k4f = dr * (g + k3g);
+            double k4g = dr * (-2 * (E + 1 / (r + dr)) * (f + k3f));
+
+            f += (k1f + 2 * k2f + 2 * k3f + k4f) / 6;
+            g += (k1g + 2 * k2g + 2 * k3g + k4g) / 6;
+        }
+        return f; // f(rmax)
+    }
+    // Bisection root finder
+    static double find_root(Func<double, double> M, double E1, double E2, double tol)
+    {
+        double f1 = M(E1), f2 = M(E2);
+        if (f1 * f2 > 0) throw new Exception("Root not bracketed");
+        int iter = 0;
+        while (Math.Abs(E2 - E1) > tol)
+        {
+            double Em = 0.5 * (E1 + E2);
+            double fm = M(Em);
+            if (f1 * fm < 0) { E2 = Em; f2 = fm; }
+            else { E1 = Em; f1 = fm; }
+            iter++;
+            if (iter > 100) { Console.WriteLine("Warning: Bisection exceeded 100 iterations!"); break; }
+        }
+        return 0.5 * (E1 + E2);
+    }
+
+    static void Main(string[] args)
+    {
+        Console.WriteLine("--- Newton: Rosenbrock minimum ---");
+        vector start1 = new vector(1.2, 1.2);
+        vector minR = NumMethods.newton(rosenbrock_grad, start1);
+        Console.WriteLine($"Rosenbrock minimum: {minR}");
+
+        Console.WriteLine("\n--- Newton: Himmelblau minimum ---");
+        vector start2 = new vector(1.0, 1.0);
+        vector minH = NumMethods.newton(himmelblau_grad, start2);
+        Console.WriteLine($"Himmelblau minimum: {minH}");
+
+        // Other minima for Himmelblau (the function has 4!)
+        vector[] himStarts = {
+            new vector(3, 2), new vector(-2.8, 3.1), new vector(-3.8, -3.3), new vector(3.6, -1.8)
         };
-
-        double E1 = -1.0, E2 = -0.1;
-        double root = Bisection(M, E1, E2);
-        Console.WriteLine($"Hydrogen ground state E0 = {root} (expected -0.5)");
-    }
-
-    static double Bisection(Func<double, double> f, double a, double b, double acc = 1e-6)
-    {
-        double fa = f(a), fb = f(b);
-        if (fa * fb > 0) throw new Exception("Bisection error");
-        while (b - a > acc)
+        for(int i=0; i<himStarts.Length; i++)
         {
-            double c = (a + b) / 2, fc = f(c);
-            if (fa * fc < 0) { b = c; fb = fc; } else { a = c; fa = fc; }
+            vector res = NumMethods.newton(himmelblau_grad, himStarts[i]);
+            Console.WriteLine($"Himmelblau minimum from point {himStarts[i]}: {res}");
         }
-        return (a + b) / 2;
-    }
 
-    static void ExportHydrogenWaveFunction()
-    {
-        double rmin = 1e-4, rmax = 8.0;
-        double E = -0.5;
-        Func<double, Vec, Vec> F = (r, y) => new Vec(y[1], -2 * (-1 / r - E) * y[0]);
-        Vec y0 = new Vec(rmin - rmin * rmin, 1 - 2 * rmin);
-        var (rs, ys) = OdeSolver.RKDriver(F, rmin, rmax, y0);
+        Console.WriteLine("\n--- Shooting method: hydrogen atom ground state ---");
+        double rmin = 1e-3, rmax = 8, dr = 1e-2;
+        Func<double, double> M = (E) => shoot(E, rmin, rmax, dr);
+        double E0 = find_root(M, -1.0, -0.1, 1e-6);
+        Console.WriteLine($"Numerical E0: {E0} (should be close to -0.5)");
 
-        using var writer = new StreamWriter("wavefunction.csv");
-        writer.WriteLine("r,f(r)");
-        for (int i = 0; i < rs.size(); i++)
+        // Write data to file for plotting in gnuplot
+        using (StreamWriter sw = new StreamWriter("hydrogen.dat"))
         {
-            writer.WriteLine($"{rs[i]},{ys[i][0]}");
+            sw.WriteLine("# r   f_num   f_exact");
+            for (double r = 0.1; r < 5.1; r += 0.05)
+            {
+                // RK4 integration for f_num
+                double f = rmin - rmin * rmin;
+                double g = 1 - 2 * rmin;
+                double rr;
+                for (rr = rmin; rr < r; rr += dr)
+                {
+                    double k1f = dr * g;
+                    double k1g = dr * (-2 * (E0 + 1 / rr) * f);
+
+                    double k2f = dr * (g + 0.5 * k1g);
+                    double k2g = dr * (-2 * (E0 + 1 / (rr + 0.5 * dr)) * (f + 0.5 * k1f));
+
+                    double k3f = dr * (g + 0.5 * k2g);
+                    double k3g = dr * (-2 * (E0 + 1 / (rr + 0.5 * dr)) * (f + 0.5 * k2f));
+
+                    double k4f = dr * (g + k3g);
+                    double k4g = dr * (-2 * (E0 + 1 / (rr + dr)) * (f + k3f));
+
+                    f += (k1f + 2 * k2f + 2 * k3f + k4f) / 6;
+                    g += (k1g + 2 * k2g + 2 * k3g + k4g) / 6;
+                }
+                double f_exact = r * Math.Exp(-r);
+                sw.WriteLine($"{r:F4}\t{f:F8}\t{f_exact:F8}");
+            }
         }
-        Console.WriteLine("Wavefunction data written to wavefunction.csv");
+        Console.WriteLine("Data written to hydrogen.dat - ready for gnuplot!");
+
+        // How to plot in gnuplot
+        Console.WriteLine("\nTo plot in gnuplot, type for example:");
+        Console.WriteLine("plot 'hydrogen.dat' using 1:2 with lines title 'numerical', \\");
+        Console.WriteLine("     'hydrogen.dat' using 1:3 with lines title 'exact'");
     }
 }
