@@ -1,0 +1,5 @@
+set terminal svg background "white"
+set output "erf.svg"
+set xlabel "x"
+set ylabel "erf(x)"
+plot "erf.txt" with lines title "erf(x)"

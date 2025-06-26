@@ -1,0 +1,69 @@
+Last login: Tue Jun 24 10:42:13 on ttys000
+(eval):13: command not found: compdef
+dkalerab@M-03818 ~ % cd Desktop 
+dkalerab@M-03818 Desktop % ls
+Practical_programming_numerical_methods_25
+Screenshot 2025-04-22 at 13.29.35.png
+Screenshot 2025-06-23 at 16.42.10.png
+Screenshot 2025-06-24 at 11.52.20.png
+Template-for-time-registration-for-student-workers.xlsx
+am-service-assortment
+b2b-am-bff
+b2b-am-frontend
+b2b-am-service-reporting
+computetional physics presentations
+computetional-physics
+min
+notatki.txt
+sluchanie
+uni
+dkalerab@M-03818 Desktop % cd Practical_programming_numerical_methods_25 
+dkalerab@M-03818 Practical_programming_numerical_methods_25 % ls
+config		examination	exercises	homeworks
+dkalerab@M-03818 Practical_programming_numerical_methods_25 % cd exercises 
+dkalerab@M-03818 exercises % ls
+bin		genlist		math		posix
+complex		hello		multiproc	vec
+epsilon		input_output	obj
+dkalerab@M-03818 exercises % cd multiproc 
+dkalerab@M-03818 multiproc % ls
+dkalerab@M-03818 multiproc % dotnet new console -n Multiproc              
+The template "Console App" was created successfully.
+
+Processing post-creation actions...
+Restoring /Users/dkalerab/Desktop/Practical_programming_numerical_methods_25/exercises/multiproc/Multiproc/Multiproc.csproj:
+Restore succeeded.
+
+
+dkalerab@M-03818 multiproc % dotnet build
+Restore complete (0,2s)
+  Multiproc succeeded with 1 warning(s) (1,0s) → bin/Debug/net9.0/Multiproc.dll
+    /Users/dkalerab/Desktop/Practical_programming_numerical_methods_25/exercises/multiproc/Program.cs(97,41): warning CS8622: Nullability of reference types in type of parameter 'obj' of 'void Program.HarmonicManual(object obj)' doesn't match the target delegate 'ParameterizedThreadStart' (possibly because of nullability attributes).
+
+Build succeeded with 1 warning(s) in 1,6s
+dkalerab@M-03818 multiproc % dotnet run                     
+Computing harmonic sum using manual threading with 1 thread(s):
+Manual threading computed sum = 18,997896413852555
+dkalerab@M-03818 multiproc % dotnet run
+/Users/dkalerab/Desktop/Practical_programming_numerical_methods_25/exercises/multiproc/Program.cs(60,37): warning CS8622: Nullability of reference types in type of parameter 'obj' of 'void Program.HarmonicManual(object obj)' doesn't match the target delegate 'ParameterizedThreadStart' (possibly because of nullability attributes).
+Using 1 thread:
+Computing harmonic sum using manual threading:
+Manual threading computed sum = 14,392726722864989
+real 0,01
+
+Using 2 threads:
+Computing harmonic sum using manual threading:
+Manual threading computed sum = 14,392726722865813
+real 0,01
+
+Using 3 threads:
+Computing harmonic sum using manual threading:
+Manual threading computed sum = 14,392726722865703
+real 0,01
+
+Using 4 threads:
+Computing harmonic sum using manual threading:
+Manual threading computed sum = 14,39272672286587
+real 0,00
+
+dkalerab@M-03818 multiproc % 

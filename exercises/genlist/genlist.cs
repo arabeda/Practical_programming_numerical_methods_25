@@ -1,27 +1,32 @@
-﻿// to run this file use 
-// dotnet run < data.txt
-// data.txt file contains input data 
+﻿using System;
 
-
-using System;
-
-public class genlist<T>
+public class GenList<T>
 {
     private T[] data;
     private int size;
     private int capacity;
 
     public int Size => size; // Property to get the number of elements
-    public T this[int i] => data[i]; // Indexer to access elements
 
-    public genlist()
+    // Indexer with range check
+    public T this[int i]
+    {
+        get
+        {
+            if (i < 0 || i >= size)
+                throw new IndexOutOfRangeException("Index out of range");
+            return data[i];
+        }
+    }
+
+    public GenList()
     {
         capacity = 8; // Initial capacity
         data = new T[capacity];
         size = 0;
     }
 
-    public void add(T item)
+    public void Add(T item)
     {
         if (size == capacity)
         {
@@ -34,7 +39,7 @@ public class genlist<T>
         size++;
     }
 
-    public void remove(int i)
+    public void Remove(int i)
     {
         if (i < 0 || i >= size)
             throw new IndexOutOfRangeException("Index out of range");
@@ -44,58 +49,68 @@ public class genlist<T>
             data[j] = data[j + 1];
         }
         size--; // Reduce the size by one
+        data[size] = default(T); // Optional: clear removed spot (important for reference types)
     }
 }
 
 // Linked List Implementation
-public class node<T>
+public class Node<T>
 {
     public T item;
-    public node<T> next;
-    public node(T item) { this.item = item; }
+    public Node<T> next;
+    public Node(T item) { this.item = item; }
 }
 
-public class list<T>
+public class MyList<T>
 {
-    public node<T> first = null, current = null;
+    public Node<T> first = null, current = null;
 
-    public void add(T item)
+    public void Add(T item)
     {
         if (first == null)
         {
-            first = new node<T>(item);
+            first = new Node<T>(item);
             current = first;
         }
         else
         {
-            current.next = new node<T>(item);
+            current.next = new Node<T>(item);
             current = current.next;
         }
     }
 
-    public void start() { current = first; }
-    public void next() { if (current != null) current = current.next; }
+    public void Start() { current = first; }
+    public void Next() { if (current != null) current = current.next; }
 }
 
 class Program
 {
     public static void Main()
     {
-        var list = new genlist<double[]>();
+        var list = new GenList<double[]>();
         char[] delimiters = { ' ', '\t' };
         var options = StringSplitOptions.RemoveEmptyEntries;
 
         string line;
-        while ((line = Console.ReadLine()) != null)
+        // Read lines until empty line or end-of-input
+        while (!string.IsNullOrWhiteSpace(line = Console.ReadLine()))
         {
             var words = line.Split(delimiters, options);
             int n = words.Length;
             var numbers = new double[n];
+            bool ok = true;
 
             for (int i = 0; i < n; i++)
-                numbers[i] = double.Parse(words[i]);
-
-            list.add(numbers);
+            {
+                if (!double.TryParse(words[i], out numbers[i]))
+                {
+                    Console.WriteLine($"Nieprawidłowa liczba: '{words[i]}' – linia zostanie pominięta");
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok)
+                list.Add(numbers);
         }
 
         // Print numbers in exponential format
@@ -108,12 +123,12 @@ class Program
         }
 
         // Demonstrate linked list usage
-        var linkedList = new list<int>();
-        linkedList.add(1);
-        linkedList.add(2);
-        linkedList.add(3);
+        var linkedList = new MyList<int>();
+        linkedList.Add(1);
+        linkedList.Add(2);
+        linkedList.Add(3);
 
-        for (linkedList.start(); linkedList.current != null; linkedList.next())
+        for (linkedList.Start(); linkedList.current != null; linkedList.Next())
         {
             Console.WriteLine(linkedList.current.item);
         }

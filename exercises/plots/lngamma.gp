@@ -1,0 +1,5 @@
+set terminal svg background "white"
+set output "lngamma.svg"
+set xlabel "x"
+set ylabel "lngamma(x)"
+plot "lngamma.txt" with lines title "ln(gamma(x))"
